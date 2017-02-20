@@ -6,15 +6,13 @@ The complete set of contributors may be found at http://polymer.github.io/CONTRI
 Code distributed by Google as part of the polymer project is also
 subject to an additional IP rights grant found at http://polymer.github.io/PATENTS.txt
 -->
+<html>
+  <head>
+    <link rel="import" href="paper-calculator-keygrid.html">
+    <link rel="import" href="paper-calculator-panels.html">
 
-<link rel="import" href="paper-calculator-keygrid.html">
-<link rel="import" href="paper-calculator-panels.html">
-
-<polymer-element name="paper-calculator-keypad" attributes="wideMode standardKeys advancedKeys modeKeys">
-
-  <template>
-
-    <style>
+<dom-module id="paper-calculator-keypad">
+  <style>
     
       :host {
         display: block;
@@ -80,45 +78,62 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
       }
       
     </style>
+  <template>
     
-    <paper-calculator-panels id="outerPanels" class="{{ {narrow : !wideMode} | tokenList}}" margin="{{margin}}" wideMode="{{wideMode}}" drawerWidthRatio="0.8">
+    <paper-calculator-panels id="outerPanels" margin="{{margin}}" widemode="{{wideMode}}" drawer-width-ratio="0.8" class$="{{_computeClass(wideMode)}}">
     
-      <paper-calculator-keygrid id="standard" main keys="{{standardKeys}}"></paper-calculator-keygrid>
+      <paper-calculator-keygrid id="standard" main="" keys="{{standardKeys}}"></paper-calculator-keygrid>
     
-      <paper-calculator-panels id="innerPanels" drawer margin="{{margin}}" wideMode="{{wideMode}}" drawerWidthRatio="0.3">
+      <paper-calculator-panels id="innerPanels" drawer="" margin="{{margin}}" widemode="{{wideMode}}" drawer-width-ratio="0.3">
       
-        <paper-calculator-keygrid id ="advanced" main keys="{{advancedKeys}}"></paper-calculator-keygrid>
+        <paper-calculator-keygrid id="advanced" main="" keys="{{advancedKeys}}"></paper-calculator-keygrid>
         
-        <paper-calculator-keygrid id="mode" drawer keys="{{modeKeys}}"></paper-calculator-keygrid>
+        <paper-calculator-keygrid id="mode" drawer="" keys="{{modeKeys}}"></paper-calculator-keygrid>
         
       </paper-calculator-panels>
       
     </paper-calculator-panels>
     
   </template>
-
   <script>
-
-    Polymer('paper-calculator-keypad', {
-      
-      margin: 24,
-      
-      findKey: function(label) {
-        var ps = [this.$.standard, this.$.advanced, this.$.mode];
-        for (var i = 0, p; p = ps[i]; i++) {
-          var key = p.findKey(label);
-          if (key) {
-            return key;
-          }
-        }
+    Polymer({
+      is: 'paper-calculator-keypad',
+      properties: {
+        advancedKeys: { notify: true },
+        margin: {
+          type: Number,
+          value: 24
+        },
+        modeKeys: { notify: true },
+        standardKeys: { notify: true },
+        wideMode: { notify: true }
       },
-      
+      findKey: function (label) {
+	  for (let p of [ this.$.standard, this.$.advanced, this.$.mode ]) {
+              var key = p.findKey(label)
+              if (key) return key
+          }
+	  return null
+      },
       get equalKey() {
         return this.$.standard.findKey('=');
-      }
-      
+      },
+      _computeClass: function (wideMode) {
+        return this.tokenList({ narrow: !wideMode });
+      },
+      tokenList: function (obj) {
+        var pieces = [];
+        for (var key in obj) {
+          if (obj[key]) {
+            pieces.push(key);
+          }
+        }
+        return pieces.join(' ');
+      },
+	ready: function() {
+	    // console.log(this.standardKeys)
+	}
+
     });
-
   </script>
-
-</polymer-element>
+</dom-module>

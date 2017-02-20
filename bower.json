@@ -1,9 +1,19 @@
 {
   "name": "paper-calculator",
   "private": true,
-  "dependencies": {
-    "core-media-query": "Polymer/core-media-query#master",
-    "font-roboto": "Polymer/font-roboto#master",
-    "paper-ripple": "Polymer/paper-ripple#master"
-  }
+  "dependencies": {},
+  "homepage": "https://github.com/Polymer/paper-calculator",
+  "authors": [
+    "Roger E Critchlow Jr <rec@elf.org>"
+  ],
+  "description": "",
+  "main": "index.html",
+  "license": "MIT",
+  "ignore": [
+    "**/.*",
+    "node_modules",
+    "bower_components",
+    "test",
+    "tests"
+  ]
 }

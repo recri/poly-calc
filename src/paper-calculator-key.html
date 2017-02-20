@@ -6,14 +6,15 @@ The complete set of contributors may be found at http://polymer.github.io/CONTRI
 Code distributed by Google as part of the polymer project is also
 subject to an additional IP rights grant found at http://polymer.github.io/PATENTS.txt
 -->
+<html>
+  <head>
+    <link rel="import" href="../bower_components/polymer/polymer.html">
+    <link rel="import" href="../bower_components/iron-flex-layout/iron-flex-layout-classes.html">
 
-<link rel="import" href="../paper-ripple/paper-ripple.html">
+    <link rel="import" href="../bower_components/paper-ripple/paper-ripple.html">
 
-<polymer-element name="paper-calculator-key" on-down="{{downAction}}" on-up="{{upAction}}">
-
-  <template>
-
-    <style>
+<dom-module id="paper-calculator-key">
+  <style include="iron-flex iron-flex-alignment">
 
       :host {
         display: block;
@@ -53,48 +54,46 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
       }
 
     </style>
+  <template>
 
-    <div class="ink-container" horizontal center-justified center layout>
+    <div class="ink-container horizontal center-justified center layout">
       <div class="ink-center">
-        <paper-ripple id="ink" class="circle recenteringTouch" initialOpacity="0.85" opacityDecayVelocity="2"></paper-ripple>
+        <paper-ripple id="ink" class="circle recenteringTouch" initialopacity="0.85" opacitydecayvelocity="2"></paper-ripple>
       </div>
     </div>
-
-    <div id="keyLabel" horizontal center-justified center layout>{{label}}</div>
+    <div id="keyLabel" class="horizontal center-justified center layout">{{keyLabel}}</div>
 
   </template>
-
   <script>
-
-    Polymer('paper-calculator-key', {
-
-      publish: {
-        label: {reflect: true}
+    Polymer({
+      is: 'paper-calculator-key',
+      properties: {
+	  keyLabel: {
+          notify: true,
+          observer: 'labelChanged',
+          reflectToAttribute: true
+        }
       },
-
-      labelChanged: function() {
-        this.$.keyLabel.classList.toggle('small', this.label === 'DEL');
+      labelChanged: function () {
+        Polymer.dom(this.$.keyLabel).classList.toggle('small', this.label === 'DEL');
       },
-
-      downAction: function(e) {
+      downAction: function (e) {
         this.$.ink.downAction(e);
       },
-
-      upAction: function() {
+      upAction: function () {
         this.$.ink.upAction();
       },
-
-      cancelKey: function(e) {
+      cancelKey: function (e) {
         e.preventTap();
         this.resetInk();
       },
-
-      resetInk: function() {
+      resetInk: function () {
         this.$.ink.cancel();
+      },
+      listeners: {
+        down: 'downAction',
+        up: 'upAction'
       }
-
     });
-
   </script>
-
-</polymer-element>
+</dom-module>

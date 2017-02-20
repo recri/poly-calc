@@ -1,0 +1,294 @@
+<!--
+Copyright (c) 2014 The Polymer Project Authors. All rights reserved.
+This code may only be used under the BSD style license found at http://polymer.github.io/LICENSE.txt
+The complete set of authors may be found at http://polymer.github.io/AUTHORS.txt
+The complete set of contributors may be found at http://polymer.github.io/CONTRIBUTORS.txt
+Code distributed by Google as part of the polymer project is also
+subject to an additional IP rights grant found at http://polymer.github.io/PATENTS.txt
+-->
+<!--
+/**
+ * @group Paper Elements
+ *
+ * A fancy looking calculator that can only perform simple math calculation. 
+ * 
+ * @element paper-calculator
+ * @homepage github.io
+ */
+-->
+<html>
+  <head>
+    <link rel="import" href="../bower_components/polymer/polymer.html">
+    <link rel="import" href="../bower_components/iron-media-query/iron-media-query.html">
+
+    <link rel="import" href="paper-calculator-output.html">
+    <link rel="import" href="paper-calculator-keypad.html">
+    <link rel="import" href="paper-calculator-math.html">
+
+<dom-module id="paper-calculator">
+  <style>
+
+      :host {
+        display: block;
+        position: relative;
+        background-color: #eee;
+        overflow: hidden;
+
+        -webkit-user-select: none;
+        -moz-user-select: none;
+        -ms-user-select: none;
+        user-select: none;
+
+        -webkit-tap-highlight-color: rgba(0, 0, 0, 0);
+        -webkit-touch-callout: none;
+        -webkit-font-smoothing: antialiased;
+      }
+
+      #output {
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 38%;
+        z-index: 1;
+      }
+
+      #output.wide {      
+        box-shadow: 0 5px 4px rgba(0, 0, 0, 0.3);
+      }
+
+      #keypad {
+        position: absolute;
+        top: 38%;
+        bottom: 0;
+        width: 100%;
+      }
+
+      #resultInk {
+        position: absolute;
+        border-radius: 50%;
+        background-color: #73daeb;
+        -webkit-transform: translateZ(0) scale(0);
+        transform: translateZ(0) scale(0);
+      }
+
+      #resultInk.error {
+        background-color: #f50057;
+      }
+
+      #resultInk.spill {
+        -webkit-transform: translateZ(0) scale(1);
+        transform: translateZ(0) scale(1);
+        -webkit-transition: -webkit-transform 0.38s ease-out;
+        transition: transform 0.38s ease-out;
+      }
+
+    </style>
+  <template>
+
+    <div id="resultInk" class$="{{_computeClass(error, result)}}"></div>
+
+    <paper-calculator-output id="output" expression="{{expression}}" result="{{result}}" error="{{_computeClass2(wideMatches, wideMode)}}" class$="{{_computeClass(wideMatches, wideMode)}}"></paper-calculator-output>
+
+    <paper-calculator-keypad id="keypad" wide-mode="{{_computeWidemode(wideMatches, wideMode)}}" 
+			     standard-keys="{{standardKeys}}" advanced-keys="{{advancedKeys}}" mode-keys="{{modeKeys}}"
+			     on-cal-keytap="keyTap"></paper-calculator-keypad>
+    <paper-calculator-math id="math" expression="{{expression}}" result="{{result}}" error="{{error}}"></paper-calculator-math>
+
+    <iron-media-query query="{{_computeQuery(responsiveWidth)}}" query-matches="{{wideMatches}}"></iron-media-query>
+
+  </template>
+  <script>
+    Polymer({
+      is: 'paper-calculator',
+      properties: {
+        errorMsgs: {
+          type: Array,
+          value: function () {
+            return [ 'error...', 'umm...', ':-(' ];
+          }
+        },
+        eventDelegates: {
+          type: Object,
+          value: function () {
+            return {
+              keydown: 'keyDown',
+              keypress: 'keyPress'
+            };
+          }
+        },
+        /**
+         * The expression entered to the calculator.
+         *
+         * @attribute expression
+         * @type string
+         * @default ''
+         */
+        expression: {
+          type: String,
+          value: '',
+          notify: true
+        },
+        /**
+         * Min-width when calculator changes to wide layout.
+         *
+         * @attribute responsiveWidth
+         * @type string
+         * @default ''
+         */
+        responsiveWidth: {
+          type: String,
+          value: '',
+          notify: true
+        },
+        /**
+         * The result from evaluating the expression.
+         *
+         * @attribute result
+         * @type string
+         * @default ''
+         */
+        result: {
+          type: String,
+          value: '',
+          notify: true,
+          observer: 'resultChanged'
+        },
+        /**
+         * If true, calculator changes to wide layout.
+         *
+         * @attribute wideMode
+         * @type boolean
+         * @default false
+         */
+        wideMode: {
+          type: Boolean,
+          value: false,
+          notify: true
+        },
+        standardKeys: {
+          type: Array,
+          value: function () {
+            return [
+              [ '7', '4', '1', '.' ],
+              [ '8', '5', '2', '0' ],
+              [ '9', '6', '3', '=' ],
+              [ 'DEL', '+', '-', '\xF7', '\xD7' ]
+            ];
+          }
+        },
+        advancedKeys: {
+          type: Array,
+          value: function () {
+            return [
+              [ '2nd', '1/x', 'x!', 'sin', 'sinh', 'EXP' ],
+              [ '(', 'x\xB2', '\u221A', 'cos', 'cosh', 'Π' ],
+              [ ')', 'x\xB3', 'ⁿ \u221Ay', 'tan', 'tanh', 'EE' ],
+              [ '%', 'yⁿ', 'log', 'ln', 'eⁿ', 'Rand' ]
+            ];
+          }
+        },
+        modeKeys: {
+          type: Array,
+          value: function () {
+            return [[ 'Deg', 'Rad', 'func', 'Table', 'Graph', '' ]];
+          }
+        },
+      },
+      clear: function () {
+        this.expression = '';
+        this.result = '';
+        this.error = '';
+      },
+      del: function () {
+        this.expression = this.expression.slice(0, -1);
+      },
+      eval: function () {
+        this.$.math.eval();
+      },
+      keyTap: function (e) {
+        var k = e.detail.key;
+        if (this.modeKeys[0].indexOf(k) < 0) {
+          this.processKey(k);
+        }
+      },
+      keyDown: function (e) {
+        // backspace key
+        if (e.keyCode === 8) {
+          this.del();
+          e.preventDefault();
+        }
+      },
+      keyPress: function (e) {
+        var c = e.keyCode, k;
+        // enter key
+        if (c === 13) {
+          k = '=';
+        } else {
+          k = String.fromCharCode(c);
+        }
+        var key = this.$.keypad.findKey(k);
+        this.processKey(k);
+        e.preventDefault();
+      },
+      processKey: function (k) {
+        if (this.result && k !== '=') {
+          this.clear();
+        }
+        if (k === '=') {
+          this.async(this.eval);
+        } else if (k === 'DEL') {
+          this.del();
+        } else {
+          this.expression += k;
+        }
+      },
+      updateResultInk: function () {
+        var rect = this.getBoundingClientRect();
+	  var key = this.$.keypad.equalKey;
+	  if (key != null) {
+	      var keyRect = key.getBoundingClientRect();
+              var s = this.$.resultInk.style;
+              var t = keyRect.top - rect.top + keyRect.height / 2;
+              s.top = -t + 'px';
+              s.left = -t * 2 + (keyRect.left - rect.left + keyRect.width / 2) + 'px';
+              s.width = s.height = 4 * t + 'px';
+	  }
+      },
+      resultChanged: function () {
+        if (this.result === '?') {
+          this.error = this.errorMsgs[Math.floor(Math.random() * this.errorMsgs.length)];
+        }
+      },
+      hostAttributes: { 'tabindex': '0' },
+      ready: function () {
+        this.updateResultInk();
+        window.addEventListener('resize', this.updateResultInk.bind(this));
+      },
+      _computeClass: function (error, result) {
+        return this.tokenList({
+          spill: result,
+          error: error
+        });
+      },
+      _computeClass2: function (wideMatches, wideMode) {
+        return this.tokenList({ wide: wideMatches || wideMode });
+      },
+      _computeWidemode: function (wideMatches, wideMode) {
+        return wideMatches || wideMode;
+      },
+      _computeQuery: function (responsiveWidth) {
+        return 'min-width: ' + responsiveWidth;
+      },
+      tokenList: function (obj) {
+        var pieces = [];
+        for (var key in obj) {
+          if (obj[key]) {
+            pieces.push(key);
+          }
+        }
+        return pieces.join(' ');
+      }
+    });
+  </script>
+</dom-module>

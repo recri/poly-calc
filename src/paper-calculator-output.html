@@ -6,14 +6,13 @@ The complete set of contributors may be found at http://polymer.github.io/CONTRI
 Code distributed by Google as part of the polymer project is also
 subject to an additional IP rights grant found at http://polymer.github.io/PATENTS.txt
 -->
+<html>
+  <head>
+    <link rel="import" href="../bower_components/polymer/polymer.html">
+    <link rel="import" href="../bower_components/iron-flex-layout/iron-flex-layout-classes.html">
 
-<link rel="import" href="../polymer/polymer.html">
-
-<polymer-element name="paper-calculator-output" attributes="expression result error">
-
-  <template>
-
-    <style>
+<dom-module id="paper-calculator-output">
+  <style include="iron-flex iron-flex-alignment">
 
       :host {
         display: block;
@@ -88,29 +87,48 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
       }
 
     </style>
+  <template>
 
-    <div class="output {{ {error: error, 'show-result': result && !error } | tokenList }}">
+    <div class$="{{_computeClass(error, result)}}">
 
-      <div class="expression-outer" horizontal end-justified center layout>
+      <div class="expression-outer layout horizontal center end-justified">
         <div id="expression">{{expression}}</div>
         <div id="error">{{error}}</div>
       </div>
 
-      <div class="result" horizontal center layout>
+      <div class="result layout horizontal center">
 
         <div class="result-equal">=</div>
-        <div class="result-value" flex horizontal end-justified layout>{{result}}</div>
+        <div class="result-value layout flex horizontal end-justified">{{result}}</div>
 
       </div>
 
     </div>
 
   </template>
-
   <script>
-
-    Polymer('paper-calculator-output');
-
+    Polymer({
+      is: 'paper-calculator-output',
+      properties: {
+        error: { notify: true },
+        expression: { notify: true },
+        result: { notify: true }
+      },
+      _computeClass: function (error, result) {
+        return 'output ' + this.tokenList({
+          error: error,
+          'show-result': result && !error
+        });
+      },
+      tokenList: function (obj) {
+        var pieces = [];
+        for (var key in obj) {
+          if (obj[key]) {
+            pieces.push(key);
+          }
+        }
+        return pieces.join(' ');
+      }
+    });
   </script>
-
-</polymer-element>
+</dom-module>

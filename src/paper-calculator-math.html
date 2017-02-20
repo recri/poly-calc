@@ -6,16 +6,19 @@ The complete set of contributors may be found at http://polymer.github.io/CONTRI
 Code distributed by Google as part of the polymer project is also
 subject to an additional IP rights grant found at http://polymer.github.io/PATENTS.txt
 -->
+<html>
+  <head>
+    <link rel="import" href="../bower_components/polymer/polymer.html">
 
-<link rel="import" href="../polymer/polymer.html">
-
-<polymer-element name="paper-calculator-math" attributes="expression result">
-  
+<dom-module id="paper-calculator-math">
   <script>
-  
-    Polymer('paper-calculator-math', {
-      
-      eval: function() {
+    Polymer({
+      is: 'paper-calculator-math',
+      properties: {
+        expression: { notify: true },
+        result: { notify: true }
+      },
+      eval: function () {
         var s = this.expression;
         s = s.replace(/\u00D7/g, '*').replace(/\u00F7/g, '/');
         try {
@@ -24,9 +27,6 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
           this.result = '?';
         }
       }
-    
     });
-    
   </script>
-  
-</polymer-element>
+</dom-module>
