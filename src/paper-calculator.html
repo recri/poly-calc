@@ -100,195 +100,190 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
   </template>
   <script>
     Polymer({
-      is: 'paper-calculator',
-      properties: {
-        errorMsgs: {
-          type: Array,
-          value: function () {
-            return [ 'error...', 'umm...', ':-(' ];
-          }
+	is: 'paper-calculator',
+	listeners: {
+            keydown: 'keyDown',
+            keypress: 'keyPress'
         },
-        eventDelegates: {
-          type: Object,
-          value: function () {
-            return {
-              keydown: 'keyDown',
-              keypress: 'keyPress'
-            };
-          }
-        },
-        /**
-         * The expression entered to the calculator.
-         *
-         * @attribute expression
-         * @type string
-         * @default ''
-         */
-        expression: {
-          type: String,
-          value: '',
-          notify: true
-        },
-        /**
-         * Min-width when calculator changes to wide layout.
-         *
-         * @attribute responsiveWidth
-         * @type string
-         * @default ''
-         */
-        responsiveWidth: {
-          type: String,
-          value: '',
-          notify: true
-        },
-        /**
-         * The result from evaluating the expression.
-         *
-         * @attribute result
-         * @type string
-         * @default ''
-         */
-        result: {
-          type: String,
-          value: '',
-          notify: true,
-          observer: 'resultChanged'
-        },
-        /**
-         * If true, calculator changes to wide layout.
-         *
-         * @attribute wideMode
-         * @type boolean
-         * @default false
-         */
-        wideMode: {
-          type: Boolean,
-          value: false,
-          notify: true
-        },
-        standardKeys: {
-          type: Array,
-          value: function () {
-            return [
-              [ '7', '4', '1', '.' ],
-              [ '8', '5', '2', '0' ],
-              [ '9', '6', '3', '=' ],
-              [ 'DEL', '+', '-', '\xF7', '\xD7' ]
-            ];
-          }
-        },
-        advancedKeys: {
-          type: Array,
-          value: function () {
-            return [
-              [ '2nd', '1/x', 'x!', 'sin', 'sinh', 'EXP' ],
-              [ '(', 'x\xB2', '\u221A', 'cos', 'cosh', 'Π' ],
-              [ ')', 'x\xB3', 'ⁿ \u221Ay', 'tan', 'tanh', 'EE' ],
-              [ '%', 'yⁿ', 'log', 'ln', 'eⁿ', 'Rand' ]
-            ];
-          }
-        },
-        modeKeys: {
-          type: Array,
-          value: function () {
-            return [[ 'Deg', 'Rad', 'func', 'Table', 'Graph', '' ]];
-          }
-        },
-      },
-      clear: function () {
-        this.expression = '';
-        this.result = '';
-        this.error = '';
-      },
-      del: function () {
-        this.expression = this.expression.slice(0, -1);
-      },
-      eval: function () {
-        this.$.math.eval();
-      },
-      keyTap: function (e) {
-        var k = e.detail.key;
-        if (this.modeKeys[0].indexOf(k) < 0) {
-          this.processKey(k);
-        }
-      },
-      keyDown: function (e) {
-        // backspace key
-        if (e.keyCode === 8) {
-          this.del();
-          e.preventDefault();
-        }
-      },
-      keyPress: function (e) {
-        var c = e.keyCode, k;
-        // enter key
-        if (c === 13) {
-          k = '=';
-        } else {
-          k = String.fromCharCode(c);
-        }
-        var key = this.$.keypad.findKey(k);
-        this.processKey(k);
-        e.preventDefault();
-      },
-      processKey: function (k) {
-        if (this.result && k !== '=') {
-          this.clear();
-        }
-        if (k === '=') {
-          this.async(this.eval);
-        } else if (k === 'DEL') {
-          this.del();
-        } else {
-          this.expression += k;
-        }
-      },
-      updateResultInk: function () {
-        var rect = this.getBoundingClientRect();
-	  var key = this.$.keypad.equalKey;
-	  if (key != null) {
-	      var keyRect = key.getBoundingClientRect();
-              var s = this.$.resultInk.style;
-              var t = keyRect.top - rect.top + keyRect.height / 2;
-              s.top = -t + 'px';
-              s.left = -t * 2 + (keyRect.left - rect.left + keyRect.width / 2) + 'px';
-              s.width = s.height = 4 * t + 'px';
-	  }
-      },
-      resultChanged: function () {
-        if (this.result === '?') {
-          this.error = this.errorMsgs[Math.floor(Math.random() * this.errorMsgs.length)];
-        }
-      },
-      hostAttributes: { 'tabindex': '0' },
-      ready: function () {
-        this.updateResultInk();
-        window.addEventListener('resize', this.updateResultInk.bind(this));
-      },
-      _computeClass: function (error, result) {
-        return this.tokenList({
-          spill: result,
-          error: error
-        });
-      },
-      _computeClass2: function (wideMatches, wideMode) {
-        return this.tokenList({ wide: wideMatches || wideMode });
-      },
-      _computeWidemode: function (wideMatches, wideMode) {
-        return wideMatches || wideMode;
-      },
-      _computeQuery: function (responsiveWidth) {
-        return 'min-width: ' + responsiveWidth;
-      },
-      tokenList: function (obj) {
-        var pieces = [];
-        for (var key in obj) {
-          if (obj[key]) {
-            pieces.push(key);
-          }
-        }
-        return pieces.join(' ');
-      }
+	properties: {
+            errorMsgs: {
+		type: Array,
+		value: function () {
+		    return [ 'error...', 'umm...', ':-(' ];
+		}
+            },
+            /**
+             * The expression entered to the calculator.
+             *
+             * @attribute expression
+             * @type string
+             * @default ''
+             */
+            expression: {
+		type: String,
+		value: '',
+		notify: true
+            },
+            /**
+             * Min-width when calculator changes to wide layout.
+             *
+             * @attribute responsiveWidth
+             * @type string
+             * @default ''
+             */
+            responsiveWidth: {
+		type: String,
+		value: '',
+		notify: true
+            },
+            /**
+             * The result from evaluating the expression.
+             *
+             * @attribute result
+             * @type string
+             * @default ''
+             */
+            result: {
+		type: String,
+		value: '',
+		notify: true,
+		observer: 'resultChanged'
+            },
+            /**
+             * If true, calculator changes to wide layout.
+             *
+             * @attribute wideMode
+             * @type boolean
+             * @default false
+             */
+            wideMode: {
+		type: Boolean,
+		value: false,
+		notify: true
+            },
+            standardKeys: {
+		type: Array,
+		value: function () {
+		    return [
+			[ '7', '4', '1', '.' ],
+			[ '8', '5', '2', '0' ],
+			[ '9', '6', '3', '=' ],
+			[ 'DEL', '+', '-', '\xF7', '\xD7' ]
+		    ];
+		}
+            },
+            advancedKeys: {
+		type: Array,
+		value: function () {
+		    return [
+			[ '2nd', '1/x', 'x!', 'sin', 'sinh', 'EXP' ],
+			[ '(', 'x\xB2', '\u221A', 'cos', 'cosh', 'Π' ],
+			[ ')', 'x\xB3', 'ⁿ \u221Ay', 'tan', 'tanh', 'EE' ],
+			[ '%', 'yⁿ', 'log', 'ln', 'eⁿ', 'Rand' ]
+		    ];
+		}
+            },
+            modeKeys: {
+		type: Array,
+		value: function () {
+		    return [[ 'Deg', 'Rad', 'func', 'Table', 'Graph', '' ]];
+		}
+            },
+	},
+	clear: function () {
+            this.expression = '';
+            this.result = '';
+            this.error = '';
+	},
+	del: function () {
+            this.expression = this.expression.slice(0, -1);
+	},
+	eval: function () {
+            this.$.math.eval();
+	},
+	keyTap: function (e) {
+            var k = e.detail.key;
+            if (this.modeKeys[0].indexOf(k) < 0) {
+		this.processKey(k);
+            }
+	},
+	keyDown: function (e) {
+            // backspace key
+            if (e.keyCode === 8) {
+		this.del();
+		e.preventDefault();
+            }
+	},
+	keyPress: function (e) {
+            var c = e.keyCode, k;
+            // enter key
+            if (c === 13) {
+		k = '=';
+            } else {
+		k = String.fromCharCode(c);
+            }
+            var key = this.$.keypad.findKey(k);
+            this.processKey(k);
+            e.preventDefault();
+	},
+	processKey: function (k) {
+            if (this.result && k !== '=') {
+		this.clear();
+            }
+            if (k === '=') {
+		this.async(this.eval);
+            } else if (k === 'DEL') {
+		this.del();
+            } else {
+		this.expression += k;
+            }
+	},
+	updateResultInk: function () {
+            var rect = this.getBoundingClientRect();
+	    var key = this.$.keypad.equalKey;
+	    if (key != null) {
+		var keyRect = key.getBoundingClientRect();
+		var s = this.$.resultInk.style;
+		var t = keyRect.top - rect.top + keyRect.height / 2;
+		s.top = -t + 'px';
+		s.left = -t * 2 + (keyRect.left - rect.left + keyRect.width / 2) + 'px';
+		s.width = s.height = 4 * t + 'px';
+	    }
+	},
+	resultChanged: function () {
+            if (this.result === '?') {
+		this.error = this.errorMsgs[Math.floor(Math.random() * this.errorMsgs.length)];
+            }
+	},
+	hostAttributes: { 'tabindex': '0' },
+	ready: function () {
+            this.updateResultInk();
+            window.addEventListener('resize', this.updateResultInk.bind(this));
+	},
+	_computeClass: function (error, result) {
+            return this.tokenList({
+		spill: result,
+		error: error
+            });
+	},
+	_computeClass2: function (wideMatches, wideMode) {
+            return this.tokenList({ wide: wideMatches || wideMode });
+	},
+	_computeWidemode: function (wideMatches, wideMode) {
+            return wideMatches || wideMode;
+	},
+	_computeQuery: function (responsiveWidth) {
+            return 'min-width: ' + responsiveWidth;
+	},
+	tokenList: function (obj) {
+            var pieces = [];
+            for (var key in obj) {
+		if (obj[key]) {
+		    pieces.push(key);
+		}
+            }
+            return pieces.join(' ');
+	}
     });
   </script>
 </dom-module>
