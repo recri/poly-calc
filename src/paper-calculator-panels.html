@@ -63,21 +63,15 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
       
     </style>
   <template>
-    
     <div id="panelContainer" class$="{{_computeClass(wideMode)}}">
-    
       <div id="main">
         <content select="[main]"></content>
       </div>
-      
       <div id="drawer" on-trackstart="trackStart" on-trackx="trackx" on-trackend="trackEnd">
         <content select="[drawer]"></content>
       </div>
-    
     </div>
-    
     <iron-media-query query="{{_computeQuery(responsiveWidth)}}" query-matches="{{wideMode}}"></iron-media-query>
-    
   </template>
   <script>
     Polymer({
