@@ -41,7 +41,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
       <template is="dom-repeat" items="{{keys}}" as="col">
         <div class="layout vertical flex">
         <template is="dom-repeat" items="{{col}}">
-            <paper-calculator-key class="flex" key-label="{{item}}" on-tap="keyTap"></paper-calculator-key>
+            <paper-calculator-key class="flex" key-label$="[[item]]" on-tap="keyTap"></paper-calculator-key>
           </template>
         </div>
       </template>
