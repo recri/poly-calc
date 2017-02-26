@@ -11,7 +11,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
     <link rel="import" href="../bower_components/polymer/polymer.html">
     <link rel="import" href="../bower_components/iron-flex-layout/iron-flex-layout-classes.html">
 
-    <link rel="import" href="../bower_components/paper-ripple/paper-ripple.html">
+    <link rel="import" href="../bower_components/paper-button/paper-button.html">
 
 <dom-module id="paper-calculator-key">
   <style include="iron-flex iron-flex-alignment">
@@ -21,32 +21,12 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
         position: relative;
       }
 
-      #keyLabel, .ink-container {
+      #keyLabel {
         position: absolute;
         top: 0;
         right: 0;
         bottom: 0;
         left: 0;
-      }
-
-      #keyLabel {
-        pointer-events: none;
-      }
-
-      .ink-center {
-        position: relative;
-        width: 0;
-        height: 0;
-      }
-
-      #ink {
-        position: absolute;
-        top: -30px;
-        left: -30px;
-        width: 60px;
-        height: 60px;
-        color: rgb(241, 250, 65);
-        pointer-events: none;
       }
 
       .small {
@@ -55,14 +35,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
 
     </style>
   <template>
-
-    <div class="ink-container horizontal center-justified center layout">
-      <div class="ink-center">
-        <paper-ripple id="ink" class="circle recenteringTouch" initialopacity="0.85" opacitydecayvelocity="2"></paper-ripple>
-      </div>
-    </div>
-    <div id="keyLabel" class="horizontal center-justified center layout">{{keyLabel}}</div>
-
+    <paper-button id="keyLabel" raised>{{keyLabel}}</paper-button>
   </template>
   <script>
     Polymer({
@@ -77,23 +50,6 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
       labelChanged: function () {
         Polymer.dom(this.$.keyLabel).classList.toggle('small', this.label === 'DEL');
       },
-      downAction: function (e) {
-        this.$.ink.downAction(e);
-      },
-      upAction: function () {
-        this.$.ink.upAction();
-      },
-      cancelKey: function (e) {
-        e.preventTap();
-        this.resetInk();
-      },
-      resetInk: function () {
-        this.$.ink.cancel();
-      },
-      listeners: {
-        down: 'downAction',
-        up: 'upAction'
-      }
     });
   </script>
 </dom-module>
