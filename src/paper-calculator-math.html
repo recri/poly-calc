@@ -11,6 +11,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
     <link rel="import" href="../bower_components/polymer/polymer.html">
 
 <dom-module id="paper-calculator-math">
+
   <script>
     Polymer({
       is: 'paper-calculator-math',
@@ -21,12 +22,23 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
       eval: function () {
         var s = this.expression;
         s = s.replace(/\u00D7/g, '*').replace(/\u00F7/g, '/');
+	  /*
+	  try {
+	    this.parsed = jsep(s)
+	  } catch(x) {
+	      console.log("jsep(s) => "+x)
+	  }
+	  */
+	  console.log("jsep = "+jsep)
         try {
-          this.result = eval(s);
+          this.result = eval(s)
         } catch (x) {
           this.result = '?';
         }
-      }
+      },
     });
   </script>
+
+  <script src="jsep.js">
+
 </dom-module>
