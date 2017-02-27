@@ -65,20 +65,27 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
   <template>
     <!--  margin="{{margin}}" wide-mode="{{wideMode}}" drawer-width-ratio="0.8" -->
     <paper-drawer-panel id="outerPanels" right-drawer responsive-width="{{responsiveWidth}}" class$="{{_computeClass(wideMode)}}">
+
       <paper-header-panel main>
-	<paper-calculator-keygrid id="standard" keys="{{standardKeys}}"></paper-calculator-keygrid>
-      </paper-header-panel>
-      <paper-header-panel drawer>
-	<!--  margin="{{margin}}" wide-mode="{{wideMode}}" drawer-width-ratio="0.3" -->
-	<paper-drawer-panel id="innerPanels" right-drawer responsive-width="{{responsiveWidth}}">
-	  <paper-header-panel main>
-	    <paper-calculator-keygrid id="advanced" keys="{{advancedKeys}}"></paper-calculator-keygrid>
-	  </paper-header-panel>
+
+	<paper-drawer-panel id="innerPanels" left-drawer responsive-width="{{responsiveWidth}}">
+
 	  <paper-header-panel drawer>
 	    <paper-calculator-keygrid id="mode" drawer keys="{{modeKeys}}"></paper-calculator-keygrid>
 	  </paper-header-panel>
+
+	  <paper-header-panel main>
+	    <paper-calculator-keygrid id="standard" keys="{{standardKeys}}"></paper-calculator-keygrid>
+	  </paper-header-panel>
+
 	</paper-drawer-panel>
+	<!--  margin="{{margin}}" wide-mode="{{wideMode}}" drawer-width-ratio="0.3" -->
       </paper-header-panel>
+
+      <paper-header-panel drawer>
+	<paper-calculator-keygrid id="advanced" keys="{{advancedKeys}}"></paper-calculator-keygrid>
+      </paper-header-panel>
+
     </paper-drawer-panel>
   </template>
   <script>
