@@ -29,11 +29,16 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
         color: #b3b3b3;
         overflow: hidden;
       }
-
+/*
       .output.show-result {
-        color: #eee;
+          color: #eee;
+	  background-color: #7F7;
       }
-
+      .output.error {
+	  color: #eee;
+	  background-color: #F77;
+      }
+*/
       .expression-outer {
         width: 100%;
         height: 100%;
@@ -59,7 +64,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
 
       #error {
         display: none;
-        color: #eee;
+        /* color: #eee; */
       }
 
       .output.error #error {
@@ -88,47 +93,31 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
 
     </style>
   <template>
-
-    <div class$="{{_computeClass(error, result)}}">
-
+    <div class$="{{_updateClass(expression, error, result)}}">
       <div class="expression-outer layout horizontal center end-justified">
         <div id="expression">{{expression}}</div>
         <div id="error">{{error}}</div>
       </div>
-
       <div class="result layout horizontal center">
-
         <div class="result-equal">=</div>
         <div class="result-value layout flex horizontal end-justified">{{result}}</div>
-
       </div>
-
     </div>
-
   </template>
   <script>
     Polymer({
-      is: 'paper-calculator-output',
-      properties: {
-        error: { notify: true },
-        expression: { notify: true },
-        result: { notify: true }
-      },
-      _computeClass: function (error, result) {
-        return 'output ' + this.tokenList({
-          error: error,
-          'show-result': result && !error
-        });
-      },
-      tokenList: function (obj) {
-        var pieces = [];
-        for (var key in obj) {
-          if (obj[key]) {
-            pieces.push(key);
-          }
-        }
-        return pieces.join(' ');
-      }
+	is: 'paper-calculator-output',
+	properties: {
+            error: { notify: true },
+            expression: { notify: true },
+            result: { notify: true }
+	},
+	_updateClass: function (expression, error, result) {
+	    var c = 'output ' + (error!=='' ? 'error ' : '') + (result!=='' && error==='' ? ' show-result' : '')
+	    console.log("updateClass(ex: "+expression+", re: "+result+", er: "+error+") returns "+c)
+	    return c;
+	},
+	
     });
   </script>
 </dom-module>

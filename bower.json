@@ -1,7 +1,10 @@
 {
   "name": "paper-calculator",
   "private": true,
-  "dependencies": {},
+  "dependencies": {
+    "paper-drawer-panel": "^1.0.11",
+    "paper-header-panel": "^1.1.7"
+  },
   "homepage": "https://github.com/Polymer/paper-calculator",
   "authors": [
     "Roger E Critchlow Jr <rec@elf.org>"

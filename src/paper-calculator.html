@@ -27,7 +27,6 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
 
 <dom-module id="paper-calculator">
   <style>
-
       :host {
         display: block;
         position: relative;
@@ -43,7 +42,6 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
         -webkit-touch-callout: none;
         -webkit-font-smoothing: antialiased;
       }
-
       #output {
         position: absolute;
         top: 0;
@@ -52,18 +50,12 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
         height: 38%;
         z-index: 1;
       }
-
-      #output.wide {      
-        box-shadow: 0 5px 4px rgba(0, 0, 0, 0.3);
-      }
-
       #keypad {
         position: absolute;
         top: 38%;
         bottom: 0;
         width: 100%;
       }
-
       #resultInk {
         position: absolute;
         border-radius: 50%;
@@ -71,31 +63,23 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
         -webkit-transform: translateZ(0) scale(0);
         transform: translateZ(0) scale(0);
       }
-
       #resultInk.error {
         background-color: #f50057;
       }
-
       #resultInk.spill {
         -webkit-transform: translateZ(0) scale(1);
         transform: translateZ(0) scale(1);
         -webkit-transition: -webkit-transform 0.38s ease-out;
         transition: transform 0.38s ease-out;
       }
-
     </style>
   <template>
-
-    <div id="resultInk" class$="{{_computeClass(error, result)}}"></div>
-
-    <paper-calculator-output id="output" expression="{{expression}}" result="{{result}}" error="{{_computeClass2(wideMatches, wideMode)}}" class$="{{_computeClass(wideMatches, wideMode)}}"></paper-calculator-output>
-
-    <paper-calculator-keypad id="keypad" wide-mode="{{_computeWidemode(wideMatches, wideMode)}}" 
-			     standard-keys="{{standardKeys}}" advanced-keys="{{advancedKeys}}" mode-keys="{{modeKeys}}"
-			     on-cal-keytap="keyTap"></paper-calculator-keypad>
+    <paper-calculator-output id="output" expression="{{expression}}" result="{{result}}" error="{{error}}"></paper-calculator-output>
+    <paper-calculator-keypad id="keypad" 
+			     responsive-width="{{responsiveWidth}}" on-cal-keytap="keyTap"
+			     standard-keys="{{standardKeys}}" advanced-keys="{{advancedKeys}}" mode-keys="{{modeKeys}}">
+    </paper-calculator-keypad>
     <paper-calculator-math id="math" expression="{{expression}}" result="{{result}}" error="{{error}}"></paper-calculator-math>
-
-    <iron-media-query query="{{_computeQuery(responsiveWidth)}}" query-matches="{{wideMatches}}"></iron-media-query>
 
   </template>
   <script>
@@ -106,12 +90,6 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
             keypress: 'keyPress'
         },
 	properties: {
-            errorMsgs: {
-		type: Array,
-		value: function () {
-		    return [ 'error...', 'umm...', ':-(' ];
-		}
-            },
             /**
              * The expression entered to the calculator.
              *
@@ -120,18 +98,6 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
              * @default ''
              */
             expression: {
-		type: String,
-		value: '',
-		notify: true
-            },
-            /**
-             * Min-width when calculator changes to wide layout.
-             *
-             * @attribute responsiveWidth
-             * @type string
-             * @default ''
-             */
-            responsiveWidth: {
 		type: String,
 		value: '',
 		notify: true
@@ -148,6 +114,27 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
 		value: '',
 		notify: true,
 		observer: 'resultChanged'
+            },
+	    /**
+	     * The error
+	     * @type string
+	     * @default ''
+	     */
+	    error: {
+		type: String,
+		value: '',
+	    },
+	    /**
+	     * Min-width when calculator changes to wide layout.
+	     *
+	     * @attribute responsiveWidth
+	     * @type string
+	     * @default ''
+	     */
+	    responsiveWidth: {
+		type: String,
+		value: '',
+		notify: true
             },
             /**
              * If true, calculator changes to wide layout.
@@ -187,6 +174,12 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
 		type: Array,
 		value: function () {
 		    return [[ 'Deg', 'Rad', 'func', 'Table', 'Graph', '' ]];
+		}
+            },
+            errorMsgs: {
+		type: Array,
+		value: function () {
+		    return [ 'error...', 'umm...', ':-(' ];
 		}
             },
 	},
@@ -238,52 +231,12 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
 		this.expression += k;
             }
 	},
-	updateResultInk: function () {
-            var rect = this.getBoundingClientRect();
-	    var key = this.$.keypad.equalKey;
-	    if (key != null) {
-		var keyRect = key.getBoundingClientRect();
-		var s = this.$.resultInk.style;
-		var t = keyRect.top - rect.top + keyRect.height / 2;
-		s.top = -t + 'px';
-		s.left = -t * 2 + (keyRect.left - rect.left + keyRect.width / 2) + 'px';
-		s.width = s.height = 4 * t + 'px';
-	    }
-	},
 	resultChanged: function () {
             if (this.result === '?') {
 		this.error = this.errorMsgs[Math.floor(Math.random() * this.errorMsgs.length)];
             }
 	},
 	hostAttributes: { 'tabindex': '0' },
-	ready: function () {
-            this.updateResultInk();
-            window.addEventListener('resize', this.updateResultInk.bind(this));
-	},
-	_computeClass: function (error, result) {
-            return this.tokenList({
-		spill: result,
-		error: error
-            });
-	},
-	_computeClass2: function (wideMatches, wideMode) {
-            return this.tokenList({ wide: wideMatches || wideMode });
-	},
-	_computeWidemode: function (wideMatches, wideMode) {
-            return wideMatches || wideMode;
-	},
-	_computeQuery: function (responsiveWidth) {
-            return 'min-width: ' + responsiveWidth;
-	},
-	tokenList: function (obj) {
-            var pieces = [];
-            for (var key in obj) {
-		if (obj[key]) {
-		    pieces.push(key);
-		}
-            }
-            return pieces.join(' ');
-	}
     });
   </script>
 </dom-module>

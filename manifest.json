@@ -1,6 +1,6 @@
 {
-  "name": "Paper Calculator",
-  "short_name": "Paper Calculator",
+  "name": "Calculator",
+  "short_name": "Calculator",
   "start_url": "/",
   "display": "standalone",
   "theme_color": "#3f51b5",
