@@ -249,13 +249,14 @@
 		// An individual part of a binary expression:
 		// e.g. `foo.bar(baz)`, `1`, `"abc"`, `(a % 2)` (because it's in parenthesis)
 		gobbleToken = function() {
-		    var ch, to_check, tc_len;
+		    var c, ch, to_check, tc_len;
 		    
 		    gobbleSpaces();
 		    ch = exprICode(index);
 
-		    if(isDecimalDigit(ch) || ch === PERIOD_CODE) {
+		    if(isDecimalDigit(ch) || ch === PERIOD_CODE || ch === 120 || ch === 121 || ch === 122) {
 			// Char code 46 is a dot `.` which can start off a numeric literal
+			// Char codes 120, 121, 122 are x, y, z.
 			return gobbleNumericLiteral();
 		    } else if(ch === SQUOTE_CODE || ch === DQUOTE_CODE) {
 			// Single or double quotes
@@ -315,7 +316,12 @@
 			}
 		    }
 		    
-
+		    ch = exprI(index);
+		    while (ch === 'x' || ch === 'y' || ch === 'z') {
+			number += exprI(index++)
+			ch = exprI(index)
+		    }
+		    
 		    chCode = exprICode(index);
 		    // Check to make sure this isn't a variable name that start with a number (123abc)
 		    if(isIdentifierStart(chCode)) {
@@ -325,9 +331,11 @@
 			throwError('Unexpected period', index);
 		    }
 
+		    var value;
+		    try { value = parseFloat(number) } catch(x) {}
 		    return {
 			type: LITERAL,
-			value: parseFloat(number),
+			value: value,
 			raw: number
 		    };
 		},

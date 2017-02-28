@@ -13,6 +13,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
 <dom-module id="paper-calculator-math">
 
   <script src="jsep.js"></script>
+  <script src="cnumber.js"></script>
   <script>
     
     Polymer({
@@ -24,19 +25,19 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
 	evaluate: function(tree) {
 	    switch (tree.type) {
 	    case 'Literal':
-		return tree.value;
+		return CNumber.parseCNumber(tree.raw);
 	    case 'BinaryExpression':
 		switch (tree.operator) {
-		case '+': return this.evaluate(tree.left) + this.evaluate(tree.right);
-		case '-': return this.evaluate(tree.left) - this.evaluate(tree.right);
-		case '*': return this.evaluate(tree.left) * this.evaluate(tree.right);
-		case '/': return this.evaluate(tree.left) / this.evaluate(tree.right);
+		case '+': return this.evaluate(tree.left).add(this.evaluate(tree.right))
+		case '-': return this.evaluate(tree.left).subtract(this.evaluate(tree.right))
+		case '*': return this.evaluate(tree.left).multiply(this.evaluate(tree.right))
+		case '/': return this.evaluate(tree.left).divide(this.evaluate(tree.right))
 		default: throw "unknown binary operator: "+tree.operator
 		}
 	    case 'UnaryExpression':
 		switch (tree.operator) {
-		case '-': return - this.evaluate(tree.argument);
-		case '+': return + this.evaluate(tree.argument);
+		case '-': return this.evaluate(tree.argument).negate();
+		case '+': return this.evaluate(tree.argument);
 		default: throw "unknown unary operator: "+tree.operator
 		}
 		// case 'ConditionalExpression':
@@ -51,6 +52,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
 		this.result = this.evaluate(jsep(s))
 	    } catch(x) {
 		console.log("this.evaluate(jsep(s)) => "+x)
+		this.result = this.evaluate(jsep(s))
 		this.result = '?'
 	    }
 	}
