@@ -45,14 +45,25 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
 		throw "unknown expression type: "+tree.type
 	    }
 	},
+	mapmuldiv: function(s) {
+	    return s.replace(/\u00D7/g, '*').replace(/\u00F7/g, '/')
+	},
+        mapxyz: function(s) {
+	    // \u{1d465} \u{1d466} \u{1d467}
+	    // \uD835\uDC65 \uD835\uDC66 \uD835\uDC67
+	    return s.replace(/\uD835\uDC65/g, 'x').replace(/\uD835\uDC66/g, 'y').replace(/\uD835\uDC67/g, 'z')
+	},
+	unmapxyz: function(s) {
+	    return s.toString().replace(/\u0078/g, '\uD835\uDC65').replace(/\u0079/g, '\uD835\uDC66').replace(/\u007A/g, '\uD835\uDC67')
+	},
 	eval: function () {
-            var s = this.expression;
-            s = s.replace(/\u00D7/g, '*').replace(/\u00F7/g, '/');
+            var s = this.mapxyz(this.mapmuldiv(this.expression));
+	    console.log("expr: "+this.expression+", map: "+s);
 	    try {
-		this.result = this.evaluate(jsep(s))
+		this.result = this.unmapxyz(this.evaluate(jsep(s)))
 	    } catch(x) {
 		console.log("this.evaluate(jsep(s)) => "+x)
-		this.result = this.evaluate(jsep(s))
+		this.result = this.unmapxyz(this.evaluate(jsep(s)))
 		this.result = '?'
 	    }
 	}

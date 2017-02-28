@@ -257,6 +257,7 @@
 		    if(isDecimalDigit(ch) || ch === PERIOD_CODE || ch === 120 || ch === 121 || ch === 122) {
 			// Char code 46 is a dot `.` which can start off a numeric literal
 			// Char codes 120, 121, 122 are x, y, z.
+			// Char codes 1d465, 1d466, 1d467 are scriptish x, y, z
 			return gobbleNumericLiteral();
 		    } else if(ch === SQUOTE_CODE || ch === DQUOTE_CODE) {
 			// Single or double quotes
@@ -316,10 +317,10 @@
 			}
 		    }
 		    
-		    ch = exprI(index);
-		    while (ch === 'x' || ch === 'y' || ch === 'z') {
+		    ch = exprICode(index);
+		    while (ch === 120 || ch === 121 || ch === 122) {
 			number += exprI(index++)
-			ch = exprI(index)
+			ch = exprICode(index)
 		    }
 		    
 		    chCode = exprICode(index);

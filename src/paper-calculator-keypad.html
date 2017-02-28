@@ -42,6 +42,11 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
         background-color: #40bd9e;
       }
       
+      paper-header-panel.standard {
+         width: 95%;
+         left: 2.5%;
+      }
+
       [drawer] {
         -webkit-transform: translateZ(0);
         transform: translateZ(0);
@@ -70,11 +75,11 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
 
 	<paper-drawer-panel id="innerPanels" left-drawer responsive-width="{{responsiveWidth}}">
 
-	  <paper-header-panel drawer>
-	    <paper-calculator-keygrid id="mode" drawer keys="{{modeKeys}}"></paper-calculator-keygrid>
+	  <paper-header-panel drawer class="advanced">
+	    <paper-calculator-keygrid id="advanced" keys="{{advancedKeys}}"></paper-calculator-keygrid>
 	  </paper-header-panel>
 
-	  <paper-header-panel main>
+	  <paper-header-panel main class="standard">
 	    <paper-calculator-keygrid id="standard" keys="{{standardKeys}}"></paper-calculator-keygrid>
 	  </paper-header-panel>
 
@@ -82,8 +87,8 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
 	<!--  margin="{{margin}}" wide-mode="{{wideMode}}" drawer-width-ratio="0.3" -->
       </paper-header-panel>
 
-      <paper-header-panel drawer>
-	<paper-calculator-keygrid id="advanced" keys="{{advancedKeys}}"></paper-calculator-keygrid>
+      <paper-header-panel drawer class="mode">
+	<paper-calculator-keygrid id="mode" drawer keys="{{modeKeys}}"></paper-calculator-keygrid>
       </paper-header-panel>
 
     </paper-drawer-panel>

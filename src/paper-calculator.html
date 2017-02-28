@@ -152,9 +152,9 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
 		type: Array,
 		value: function () {
 		    return [
-			[ '7', '4', '1', '.' ],
-			[ '8', '5', '2', '0' ],
-			[ '9', '6', '3', '=' ],
+			[ '7', '4', '1', '.', '\u{1D465}' ],
+			[ '8', '5', '2', '0', '\u{1D466}' ],
+			[ '9', '6', '3', '=', '\u{1D467}' ],
 			[ 'DEL', '+', '-', '\xF7', '\xD7' ]
 		    ];
 		}
@@ -209,12 +209,15 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
 	},
 	keyPress: function (e) {
             var c = e.keyCode, k;
+	    console.log(e)
             // enter key
-            if (c === 13) {
-		k = '=';
-            } else {
-		k = String.fromCharCode(c);
-            }
+	    switch (c) {
+	    case 13: k = '='; break;
+	    case 120: k = '\u{1D465}'; break; // alt+x
+	    case 121: k = '\u{1D466}'; break; // alt+y
+	    case 122: k = '\u{1D467}'; break; // alt+z
+	    default: k = String.fromCharCode(c); break;
+	    }
             //var key = this.$.keypad.findKey(k);
             this.processKey(k);
             e.preventDefault();
