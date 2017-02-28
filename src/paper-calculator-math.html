@@ -12,33 +12,50 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
 
 <dom-module id="paper-calculator-math">
 
+  <script src="jsep.js"></script>
   <script>
+    
     Polymer({
-      is: 'paper-calculator-math',
-      properties: {
-        expression: { notify: true },
-        result: { notify: true }
-      },
-      eval: function () {
-        var s = this.expression;
-        s = s.replace(/\u00D7/g, '*').replace(/\u00F7/g, '/');
-	  /*
-	  try {
-	    this.parsed = jsep(s)
-	  } catch(x) {
-	      console.log("jsep(s) => "+x)
-	  }
-	  */
-	  console.log("jsep = "+jsep)
-        try {
-          this.result = eval(s)
-        } catch (x) {
-          this.result = '?';
-        }
-      },
+	is: 'paper-calculator-math',
+	properties: {
+            expression: { notify: true },
+            result: { notify: true }
+	},
+	evaluate: function(tree) {
+	    switch (tree.type) {
+	    case 'Literal':
+		return tree.value;
+	    case 'BinaryExpression':
+		switch (tree.operator) {
+		case '+': return this.evaluate(tree.left) + this.evaluate(tree.right);
+		case '-': return this.evaluate(tree.left) - this.evaluate(tree.right);
+		case '*': return this.evaluate(tree.left) * this.evaluate(tree.right);
+		case '/': return this.evaluate(tree.left) / this.evaluate(tree.right);
+		default: throw "unknown binary operator: "+tree.operator
+		}
+	    case 'UnaryExpression':
+		switch (tree.operator) {
+		case '-': return - this.evaluate(tree.argument);
+		case '+': return + this.evaluate(tree.argument);
+		default: throw "unknown unary operator: "+tree.operator
+		}
+		// case 'ConditionalExpression':
+	    default:
+		throw "unknown expression type: "+tree.type
+	    }
+	},
+	eval: function () {
+            var s = this.expression;
+            s = s.replace(/\u00D7/g, '*').replace(/\u00F7/g, '/');
+	    try {
+		this.result = this.evaluate(jsep(s))
+	    } catch(x) {
+		console.log("this.evaluate(jsep(s)) => "+x)
+		this.result = '?'
+	    }
+	}
     });
   </script>
 
-  <script src="jsep.js">
 
 </dom-module>
