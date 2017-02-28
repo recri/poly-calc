@@ -209,16 +209,13 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
 	},
 	keyPress: function (e) {
             var c = e.keyCode, k;
-	    console.log(e)
-            // enter key
 	    switch (c) {
-	    case 13: k = '='; break;
-	    case 120: k = '\u{1D465}'; break; // alt+x
-	    case 121: k = '\u{1D466}'; break; // alt+y
-	    case 122: k = '\u{1D467}'; break; // alt+z
+	    case 13: k = '='; break;	      // enter key
+	    case 120: k = '\u{1D465}'; break; // x
+	    case 121: k = '\u{1D466}'; break; // y
+	    case 122: k = '\u{1D467}'; break; // z
 	    default: k = String.fromCharCode(c); break;
 	    }
-            //var key = this.$.keypad.findKey(k);
             this.processKey(k);
             e.preventDefault();
 	},
